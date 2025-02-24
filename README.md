@@ -5,6 +5,7 @@
 A simple web to be used as an shell to control your remote servers. It is written in Golang, base on xterm.js.
 
 ### Preview
+![image](https://github.com/user-attachments/assets/5e06ddf0-9875-4036-b746-7d8f4272f319)
 
 
 ### Quickstart
