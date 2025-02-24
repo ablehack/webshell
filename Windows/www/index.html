@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.svg" type="image/x-icon" />
+    <link rel="stylesheet" href="xterm.css">
+    <script src="xterm.js"></script>
+    <title>WebSSH</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+        }
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal"></div>
+    <script>
+        var cols = Math.floor(window.innerWidth / 9);
+        var rows = Math.floor(window.innerHeight / 17.54);
+        const term = new Terminal({
+            scrollback: 10000, //最大滚动条数
+            cursorBlink: true, //光标闪烁
+            // convertEol: true, //自动转换换行符
+            cols: cols,
+            rows: rows,
+            theme: {
+                background: '#000000',
+                foreground: '#FFFFFF',
+            }
+        });
+        term.open(document.getElementById('terminal'));
+        term.write('Welcome to WebSSH!\r\n');
+
+        const socket = new WebSocket(`ws://${window.location.host}/ws`);
+        socket.onopen = () => {
+            socket.send('C:\r'); //初始化发送换行
+        };
+        term.onData(data => {
+            socket.send(data);
+        });
+        socket.onmessage = event => {
+            term.write(event.data);
+        };
+
+        window.addEventListener('resize', () => {
+            var cols = Math.floor(window.innerWidth / 9);
+            var rows = Math.floor(window.innerHeight / 17.54);
+            term.resize(cols, rows);
+        });
+    </script>
+</body>
+</html>
